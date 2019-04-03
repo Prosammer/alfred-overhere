@@ -3,15 +3,15 @@ from workflow import Workflow3, ICON_WEB, ICON_WARNING, web
 from pyicloud import PyiCloudService
 import click
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--setcode', dest='two_factor_code', nargs='?', default=None)
-parser.add_argument('query', nargs='?', default=None)
-args = parser.parse_args(wf.args)
 
 
-if sys.argv[1] ==
+chosen_device = sys.argv[1]
+
+# api.devices[chosen_device].play_sound()
+print chosen_device
+
+
 if api.requires_2sa:
-
     trusted_device = trusted_devices[trusted_device]
 
     # Have to change this to have selected device argument passed to trusted_device
@@ -23,11 +23,6 @@ if api.requires_2sa:
     if not api.validate_verification_code(trusted_device, code):
         print "Failed to verify verification code"
         sys.exit(1)
-
-
-
-
-
 
 
     # decide what to do based on arguments

@@ -13,21 +13,12 @@ api = PyiCloudService(login_info[0], login_info[1])
 
 def main(wf):
     if api.requires_2sa:
-        trusted_devices = api.trusted_devices
-        for i, trusted_device in enumerate(trusted_devices):
-            # print "  %s: %s" % (i, trusted_device.get('deviceName',
-            # "SMS to %s" % trusted_device.get('phoneNumber')))
-            wf.add_item(title=trusted_device.get('deviceName'),
-                        subtitle='Send iCloud verification code to this device', valid="Yes",
-                        arg=trusted_device)
-
-
         wf.add_item('Need to verify with iCloud two-factor authentication',
-                     "Please use 'overify' keyword to choose which device you'd like to send the code to",
-                     valid=False, icon=ICON_WARNING)
+                    "Please use 'overify' keyword to choose which device you'd like to send the code to",
+                    valid=False, icon=ICON_WARNING)
         wf.send_feedback()
-    else:
 
+    else:
         device_list = api.devices._devices
 
         for device_id, device in device_list.iteritems():

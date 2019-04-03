@@ -37,6 +37,88 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>overhere</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>1</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching for your devices....</string>
+				<key>script</key>
+				<string>import sys
+
+from pyicloud import PyiCloudService
+
+from workflow import Workflow3
+
+login_info = None
+for line in open("apidata.txt", "r").readlines():
+    login_info = line.split()
+
+api = PyiCloudService(login_info[0], login_info[1])
+
+
+def main(wf):
+    if api.requires_2sa:
+        wf.add_item('Need to verify with iCloud two-factor authentication',
+                    "Please use 'overify' keyword to choose which device you'd like to send the code to",
+                    valid=False, icon=ICON_WARNING)
+        wf.send_feedback()
+
+    else:
+        device_list = api.devices._devices
+
+        for device_id, device in device_list.iteritems():
+            device_name = str(device).split(":", 1)[1]
+            device_hardware = str(device).split(":")[0]
+            it = wf.add_item(title=device_name,
+                             subtitle=device_hardware, valid="Yes",
+                             arg=device_id)
+        wf.send_feedback()
+
+
+if __name__ == "__main__":
+    wf = Workflow3()
+    sys.exit(wf.run(main))
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Play a sound quickly using iCloud</string>
+				<key>title</key>
+				<string>Play a sound on an iCloud device</string>
+				<key>type</key>
+				<integer>3</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>D05A0095-1DB7-4B74-9FD2-415C6AB3EE66</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -45,9 +127,6 @@
 				<string>import sys
 from workflow import Workflow3, ICON_WEB, web
 from pyicloud import PyiCloudService
-
-
-api = PyiCloudService(***REMOVED***)
 
 
 chosen_device = sys.argv[1]
@@ -82,7 +161,7 @@ print chosen_device</string>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>overhere</string>
+				<string>overify</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -95,41 +174,35 @@ print chosen_device</string>
 				<string>Searching for your devices....</string>
 				<key>script</key>
 				<string>import sys
-from workflow import Workflow3, ICON_WEB, web
+
 from pyicloud import PyiCloudService
 
+from workflow import Workflow3
 
-api = PyiCloudService(***REMOVED***)
+login_info = None
+for line in open("apidata.txt", "r").readlines():
+    login_info = line.split()
+
+api = PyiCloudService(login_info[0], login_info[1])
+
 
 def main(wf):
     if api.requires_2sa:
-        import click
+        wf.add_item('Need to verify with iCloud two-factor authentication',
+                    "Please use 'overify' keyword to choose which device you'd like to send the code to",
+                    valid=False, icon=ICON_WARNING)
+        wf.send_feedback()
 
-        trusted_devices = api.trusted_devices
-        for i, trusted_device in enumerate(trusted_devices):
-            print "  %s: %s" % (i, trusted_device.get('deviceName',
-            "SMS to %s" % trusted_device.get('phoneNumber')))
+    else:
+        device_list = api.devices._devices
 
-        trusted_device = click.prompt('Which device would you like to use?', default=0)
-        trusted_device = trusted_devices[trusted_device]
-        if not api.send_verification_code(trusted_device):
-            print "Failed to send verification code"
-            sys.exit(1)
-
-        code = click.prompt('Please enter validation code')
-        if not api.validate_verification_code(trusted_device, code):
-            print "Failed to verify verification code"
-            sys.exit(1)
-
-    device_list = api.devices._devices
-
-    for device_id, device in device_list.iteritems():
-        device_name = str(device).split(":",1)[1]
-        device_hardware = str(device).split(":")[0]
-        it = wf.add_item(title= device_name,
-        subtitle= device_hardware, valid="Yes",
-        arg= device_id)
-    wf.send_feedback()
+        for device_id, device in device_list.iteritems():
+            device_name = str(device).split(":", 1)[1]
+            device_hardware = str(device).split(":")[0]
+            it = wf.add_item(title=device_name,
+                             subtitle=device_hardware, valid="Yes",
+                             arg=device_id)
+        wf.send_feedback()
 
 
 if __name__ == "__main__":
@@ -141,9 +214,9 @@ if __name__ == "__main__":
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string>Play a sound quickly using iCloud</string>
+				<string>Choose which device you'd like to send your verification code</string>
 				<key>title</key>
-				<string>Play a sound on an iCloud device</string>
+				<string>Two-step verification</string>
 				<key>type</key>
 				<integer>3</integer>
 				<key>withspace</key>
@@ -152,7 +225,7 @@ if __name__ == "__main__":
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>D05A0095-1DB7-4B74-9FD2-415C6AB3EE66</string>
+			<string>7BA6AFB2-8025-4C98-86BB-964B2A498D02</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -167,6 +240,13 @@ if __name__ == "__main__":
 			<integer>600</integer>
 			<key>ypos</key>
 			<integer>140</integer>
+		</dict>
+		<key>7BA6AFB2-8025-4C98-86BB-964B2A498D02</key>
+		<dict>
+			<key>xpos</key>
+			<integer>270</integer>
+			<key>ypos</key>
+			<integer>320</integer>
 		</dict>
 		<key>D05A0095-1DB7-4B74-9FD2-415C6AB3EE66</key>
 		<dict>
