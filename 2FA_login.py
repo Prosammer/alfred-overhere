@@ -3,6 +3,13 @@ from workflow import Workflow3, ICON_WEB, ICON_WARNING, web
 from pyicloud import PyiCloudService
 import click
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--setcode', dest='two_factor_code', nargs='?', default=None)
+parser.add_argument('query', nargs='?', default=None)
+args = parser.parse_args(wf.args)
+
+
+if sys.argv[1] ==
 if api.requires_2sa:
 
     trusted_device = trusted_devices[trusted_device]
@@ -19,10 +26,7 @@ if api.requires_2sa:
 
 
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--setcode', dest='two_factor_code', nargs='?', default=None)
-    parser.add_argument('query', nargs='?', default=None)
-    args = parser.parse_args(wf.args)
+
 
 
 
