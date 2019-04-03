@@ -37,6 +37,40 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>import sys
+from workflow import Workflow3, ICON_WEB, web
+from pyicloud import PyiCloudService
+
+
+api = PyiCloudService('sam.finton@gmail.com', 'qZU7D&amp;2fkd')
+
+
+chosen_device = sys.argv[1]
+
+# api.devices[chosen_device].play_sound()
+print chosen_device</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>5FC19D48-072D-4E3C-B8B8-CD03405DC8E4</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -65,7 +99,7 @@ from workflow import Workflow3, ICON_WEB, web
 from pyicloud import PyiCloudService
 
 
-api = PyiCloudService(***REMOVED***)
+api = PyiCloudService('sam.finton@gmail.com', 'qZU7D&amp;2fkd')
 
 def main(wf):
     if api.requires_2sa:
@@ -119,40 +153,6 @@ if __name__ == "__main__":
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
 			<string>D05A0095-1DB7-4B74-9FD2-415C6AB3EE66</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>68</integer>
-				<key>script</key>
-				<string>import sys
-from workflow import Workflow3, ICON_WEB, web
-from pyicloud import PyiCloudService
-
-
-api = PyiCloudService(***REMOVED***)
-
-
-chosen_device = sys.argv[1]
-
-api.devices[chosen_device].play_sound()
-print chosen_device</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>3</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>5FC19D48-072D-4E3C-B8B8-CD03405DC8E4</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
