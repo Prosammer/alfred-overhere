@@ -47,7 +47,7 @@ from workflow import Workflow3, ICON_WEB, web
 from pyicloud import PyiCloudService
 
 
-api = PyiCloudService(***REMOVED***)
+api = PyiCloudService('sam.finton@gmail.com', 'qZU7D&amp;2fkd')
 
 
 chosen_device = sys.argv[1]
@@ -99,7 +99,7 @@ from workflow import Workflow3, ICON_WEB, web
 from pyicloud import PyiCloudService
 
 
-api = PyiCloudService(***REMOVED***)
+api = PyiCloudService('sam.finton@gmail.com', 'qZU7D&amp;2fkd')
 
 def main(wf):
     if api.requires_2sa:
