@@ -8,6 +8,19 @@
 	<string>Tools</string>
 	<key>connections</key>
 	<dict>
+		<key>17AECF43-5738-49D2-8181-F5F5AE312B4E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3EAFB6B6-628E-4694-B4F7-47658ED23AD0</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>5FC19D48-072D-4E3C-B8B8-CD03405DC8E4</key>
 		<array/>
 		<key>D05A0095-1DB7-4B74-9FD2-415C6AB3EE66</key>
@@ -64,7 +77,10 @@
 
 from pyicloud import PyiCloudService
 
-from workflow import Workflow3
+from workflow import Workflow3, ICON_WARNING
+
+# TODO Use BFG tool to remove old commit credentials
+
 
 login_info = None
 for line in open("apidata.txt", "r").readlines():
@@ -81,16 +97,7 @@ def main(wf):
         wf.send_feedback()
 
     else:
-        device_list = api.devices._devices
-
-        for device_id, device in device_list.iteritems():
-            device_name = str(device).split(":", 1)[1]
-            device_hardware = str(device).split(":")[0]
-            it = wf.add_item(title=device_name,
-                             subtitle=device_hardware, valid="Yes",
-                             arg=device_id)
-        wf.send_feedback()
-
+        print "2SA not required!"
 
 if __name__ == "__main__":
     wf = Workflow3()
@@ -129,10 +136,11 @@ from workflow import Workflow3, ICON_WEB, web
 from pyicloud import PyiCloudService
 
 
-chosen_device = sys.argv[1]
-
-# api.devices[chosen_device].play_sound()
-print chosen_device</string>
+if wf.getvar() is not None:
+    print "Houston, we have a workflow variable:", str(wf.getvar())
+else:
+    print "No variable to get / wf.getvar() is None"
+    sys.exit()</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -150,6 +158,39 @@ print chosen_device</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>import sys
+from workflow import Workflow3, ICON_WEB, web
+from pyicloud import PyiCloudService
+
+
+print "Runscript running..."
+if wf.getvar('deviceName_object') is not None:
+    print "Houston, we have a workflow variable:", str(wf.getvar())
+else:
+    print "No variable to get / wf.getvar() is None"
+    sys.exit()</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>3EAFB6B6-628E-4694-B4F7-47658ED23AD0</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -161,7 +202,7 @@ print chosen_device</string>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>overify</string>
+				<string>ovt</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -177,46 +218,30 @@ print chosen_device</string>
 
 from pyicloud import PyiCloudService
 
-from workflow import Workflow3
-
-login_info = None
-for line in open("apidata.txt", "r").readlines():
-    login_info = line.split()
-
-api = PyiCloudService(login_info[0], login_info[1])
+from workflow import Workflow3, ICON_WARNING
 
 
 def main(wf):
-    if api.requires_2sa:
-        wf.add_item('Need to verify with iCloud two-factor authentication',
-                    "Please use 'overify' keyword to choose which device you'd like to send the code to",
-                    valid=False, icon=ICON_WARNING)
-        wf.send_feedback()
+	it = wf.add_item(title='deviceName',
+		subtitle='Send iCloud verification code to this device',
+		valid="Yes",
+		arg='deviceName_object')
 
-    else:
-        device_list = api.devices._devices
-
-        for device_id, device in device_list.iteritems():
-            device_name = str(device).split(":", 1)[1]
-            device_hardware = str(device).split(":")[0]
-            it = wf.add_item(title=device_name,
-                             subtitle=device_hardware, valid="Yes",
-                             arg=device_id)
-        wf.send_feedback()
+	it.setvar('deviceName_object',1)
 
 
 if __name__ == "__main__":
-    wf = Workflow3()
-    sys.exit(wf.run(main))
-</string>
+	wf = Workflow3()
+	print "script filter complete"
+	sys.exit(wf.run(main))</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string>Choose which device you'd like to send your verification code</string>
+				<string>Play a sound quickly using iCloud</string>
 				<key>title</key>
-				<string>Two-step verification</string>
+				<string>Play a sound on an iCloud device</string>
 				<key>type</key>
 				<integer>3</integer>
 				<key>withspace</key>
@@ -225,7 +250,7 @@ if __name__ == "__main__":
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>7BA6AFB2-8025-4C98-86BB-964B2A498D02</string>
+			<string>17AECF43-5738-49D2-8181-F5F5AE312B4E</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -234,19 +259,26 @@ if __name__ == "__main__":
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>17AECF43-5738-49D2-8181-F5F5AE312B4E</key>
+		<dict>
+			<key>xpos</key>
+			<integer>260</integer>
+			<key>ypos</key>
+			<integer>360</integer>
+		</dict>
+		<key>3EAFB6B6-628E-4694-B4F7-47658ED23AD0</key>
+		<dict>
+			<key>xpos</key>
+			<integer>600</integer>
+			<key>ypos</key>
+			<integer>310</integer>
+		</dict>
 		<key>5FC19D48-072D-4E3C-B8B8-CD03405DC8E4</key>
 		<dict>
 			<key>xpos</key>
 			<integer>600</integer>
 			<key>ypos</key>
 			<integer>140</integer>
-		</dict>
-		<key>7BA6AFB2-8025-4C98-86BB-964B2A498D02</key>
-		<dict>
-			<key>xpos</key>
-			<integer>270</integer>
-			<key>ypos</key>
-			<integer>320</integer>
 		</dict>
 		<key>D05A0095-1DB7-4B74-9FD2-415C6AB3EE66</key>
 		<dict>

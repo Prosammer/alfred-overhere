@@ -1,57 +1,41 @@
-import sys, argparse
+import sys
 from workflow import Workflow3, ICON_WEB, ICON_WARNING, web
 from pyicloud import PyiCloudService
-import click
+
+# Check workflow variable existance:
+if wf.getvar() is not None:
+    print "Houston, we have a workflow variable"
+else:
+    print "No variable to get / wf.getvar() is None"
+    sys.exit()
+
+# if workflow variable name is a string, the variable is the lost device:
+
+if isinstance(wf.getvar(), (str, object)):
+    LostDevice = sys.argv[1]
+    print str(LostDevice)
+    api.devices[LostDevice].play_sound()
+    sys.exit(1)
 
 
+# else if workflow variable name = str, the variable is the chosen 2SA device :
 
-chosen_device = sys.argv[1]
-
-# api.devices[chosen_device].play_sound()
-print chosen_device
-
-
-if api.requires_2sa:
-    trusted_device = trusted_devices[trusted_device]
-
-    # Have to change this to have selected device argument passed to trusted_device
-    if not api.send_verification_code(trusted_device):
-        print "Failed to send verification code"
-        sys.exit(1)
-
-    code = click.prompt('Please enter validation code')
-    if not api.validate_verification_code(trusted_device, code):
-        print "Failed to verify verification code"
-        sys.exit(1)
-
-
-    # decide what to do based on arguments
-    if args.apikey:  # Script was passed an API key
-        # save the key
-        wf.settings['api_key'] = args.apikey
-        return 0  # 0 means script exited cleanly
-
-
-    two_factor_code = wf.settings.get('two_factor_code', None)
-
-    if not api_key:  # iCloud code has not yet been set
-        wf.add_item('Need to verify iCloud login with two factor authentication',
-                "Please choose which iCloud device you'd like to send your two factor authentication code to",
-                valid=False,
-                icon=ICON_WARNING)
+elif isinstance(sys.argv[1], (int, object)):
+    TwoFactorDevice = sys.argv[1]
+    if not api.send_verification_code(TwoFactorDevice):
+        wf.add_item(title="Failed to send verification code",
+                    subtitle='Please try again', valid="No", icon=ICON_WARNING)
     wf.send_feedback()
-    return 0
+    sys.exit(1)
 
+    print "The object is either not the correct "
 
-     query = args.query
-     # Retrieve posts from cache if available and no more than 600
-     # seconds old
-
-    def wrapper():
-        """`cached_data` can only take a bare callable (no args),
-        so we need to wrap callables needing arguments in a function
-        that needs none.
-        """
-        return get_recent_posts(api_key)
-
-     posts = wf.cached_data('posts', wrapper, max_age=600)
+    # two_factor_code = wf.settings.get('two_factor_code', None)
+    # query = args.query
+    #
+    # def wrapper():
+    #     """`cached_data` can only take a bare callable (no args),
+    #     so we need to wrap callables needing arguments in a function
+    #     that needs none.
+    #     """
+    #     return get_recent_posts(api_key)
