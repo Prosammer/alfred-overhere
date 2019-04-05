@@ -7,7 +7,6 @@ from workflow import Workflow3, ICON_WARNING
 
 # TODO Use BFG tool to remove old commit credentials
 
-
 login_info = None
 for line in open("apidata.txt", "r").readlines():
     login_info = line.split()

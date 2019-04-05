@@ -1,41 +1,44 @@
 import sys
-from workflow import Workflow3, ICON_WEB, ICON_WARNING, web
+from workflow import Workflow3, ICON_WEB, ICON_WARNING
 from pyicloud import PyiCloudService
 
-# Check workflow variable existance:
-if wf.getvar() is not None:
-    print "Houston, we have a workflow variable"
-else:
-    print "No variable to get / wf.getvar() is None"
-    sys.exit()
+login_info = None
+for line in open("apidata.txt", "r").readlines():
+    login_info = line.split()
+api = PyiCloudService(login_info[0], login_info[1])
 
-# if workflow variable name is a string, the variable is the lost device:
-
-if isinstance(wf.getvar(), (str, object)):
-    LostDevice = sys.argv[1]
-    print str(LostDevice)
-    api.devices[LostDevice].play_sound()
-    sys.exit(1)
+chosen_device = sys.argv[0]
 
 
-# else if workflow variable name = str, the variable is the chosen 2SA device :
+def main(wf):
+    # Check argument existance:
+    if chosen_device is not None:
+        log.debug("Houston, we have an argument")
+    else:
+        log.debug("No argument / argument is None")
+        sys.exit()
 
-elif isinstance(sys.argv[1], (int, object)):
-    TwoFactorDevice = sys.argv[1]
-    if not api.send_verification_code(TwoFactorDevice):
-        wf.add_item(title="Failed to send verification code",
-                    subtitle='Please try again', valid="No", icon=ICON_WARNING)
-    wf.send_feedback()
-    sys.exit(1)
+    # if argument name is a string, the argument is the lost device:
 
-    print "The object is either not the correct "
+    if isinstance(chosen_device, (str, object)):
+        LostDevice = chosen_device
+        log.debug(str(LostDevice))
+        # api.devices[LostDevice].play_sound()
+        sys.exit(1)
 
-    # two_factor_code = wf.settings.get('two_factor_code', None)
-    # query = args.query
-    #
-    # def wrapper():
-    #     """`cached_data` can only take a bare callable (no args),
-    #     so we need to wrap callables needing arguments in a function
-    #     that needs none.
-    #     """
-    #     return get_recent_posts(api_key)
+
+    # else if argument name is an object, the variable is the chosen 2SA device :
+
+    elif isinstance(chosen_device, (int, object)):
+        TwoFactorDevice = chosen_device
+        if not api.send_verification_code(TwoFactorDevice):
+            wf.add_item(title="Failed to send verification code",
+                        subtitle='Please try again', valid="No", icon=ICON_WARNING)
+        wf.send_feedback()
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    wf = Workflow3()
+    log = wf.logger
+    wf.run(main)
