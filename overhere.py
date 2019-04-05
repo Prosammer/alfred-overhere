@@ -14,6 +14,8 @@ for line in open("apidata.txt", "r").readlines():
 api = PyiCloudService(login_info[0], login_info[1])
 
 
+# Testing git merges
+
 def main(wf):
     if api.requires_2sa:
         trusted_devices = api.trusted_devices
